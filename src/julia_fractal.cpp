@@ -7,27 +7,47 @@
 
 int width = 720;
 int height = 720;
+char title[256];
 
-float2 c = { -0.75f, 0.20f };
+float2 c = { -0.54f, 0.54f };
 
-int bailout = 4096;
-float limit = 3.0f;
+int bailout = 1024;
+float limit = 2.0f;
 
 float zoom = 1.0f;
+float2 translation = { 0.0f, 0.0f };
+
+void printConfiguration()
+{
+  std::cout <<"Configuration" << std::endl;
+  std::cout <<"=============" << std::endl;
+  std::cout << "c: (" << c.x << ", " << c.y << ")" << std::endl;
+  std::cout << "bailout: " << bailout << std::endl;
+  std::cout << "limit: " << limit << std::endl;
+  std::cout << "zoom: " << zoom << std:: endl << std:: endl;
+}
 
 void updateInputs(GLFWwindow* window)
 {
-  if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) c.x += 0.01f;
-  if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) c.x -= 0.01f;
-  if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) c.y += 0.01f;
-  if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) c.y -= 0.01f;
-  if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) limit += 2.0f;
-  if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) limit -= 2.0f;
-  if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) zoom *= 1.5f;
-  if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) zoom /= 1.5f;
+  bool configurationChanged = false;
+  if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { c.x += 0.005f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { c.x -= 0.005f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { c.y += 0.005f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { c.y -= 0.005f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) { limit += 2.0f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) { limit -= 2.0f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) { zoom *= 1.2f; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) { zoom /= 1.2f; configurationChanged = true; }
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { translation.x += 0.01f / zoom; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { translation.x -= 0.01f / zoom; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { translation.y += 0.01f / zoom; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { translation.y -= 0.01f / zoom; configurationChanged = true; }
+  if (configurationChanged) printConfiguration();
 }
 
 int main() {
+  // Print initial configuration
+  printConfiguration();
 
 	// Initialize GLFW
 	glfwInit();
@@ -46,7 +66,8 @@ int main() {
      1.0f, -1.0f, 0.0f  // Lower right corner
 	};
 
-	GLFWwindow* window = glfwCreateWindow(width, height, "Julia Fractals", NULL, NULL);
+  sprintf(title, "Julia Fractals");
+	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
 
 	// Error check if the window fails to create
 	if (window == NULL) {
@@ -140,7 +161,7 @@ int main() {
     glUniform1i(glGetUniformLocation(shaderProgram, "bailout"), bailout);
     glUniform1f(glGetUniformLocation(shaderProgram, "limit"), limit);
     glUniform1f(glGetUniformLocation(shaderProgram, "zoom"), zoom);
-
+		glUniform2f(glGetUniformLocation(shaderProgram, "translation"), translation.x, translation.y);
 
 		// Draw the triangle using the GL_TRIANGLES primitive
 		glDrawArrays(GL_TRIANGLES, 0, 6);
