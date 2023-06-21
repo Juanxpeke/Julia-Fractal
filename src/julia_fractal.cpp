@@ -9,10 +9,14 @@ int width = 720;
 int height = 720;
 char title[256];
 
-float2 c = { -0.54f, 0.54f };
+std::string shaderNames[] = { "quadratric", "cubic", "exponential" };
+GLuint shaders[3];
+int currentShaderIdx = 0;
 
-int bailout = 1024;
-float limit = 2.0f;
+float2 c = { -0.04f, 0.00f };
+
+int bailout = 128;
+float limit = 50.0f;
 
 float zoom = 1.0f;
 float2 translation = { 0.0f, 0.0f };
@@ -21,6 +25,7 @@ void printConfiguration()
 {
   std::cout <<"Configuration" << std::endl;
   std::cout <<"=============" << std::endl;
+	std::cout << "shader: " << shaderNames[currentShaderIdx] << std::endl;
   std::cout << "c: (" << c.x << ", " << c.y << ")" << std::endl;
   std::cout << "bailout: " << bailout << std::endl;
   std::cout << "limit: " << limit << std::endl;
@@ -30,6 +35,9 @@ void printConfiguration()
 void updateInputs(GLFWwindow* window)
 {
   bool configurationChanged = false;
+  if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) { currentShaderIdx = 0; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) { currentShaderIdx = 1; configurationChanged = true; }
+  if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) { currentShaderIdx = 2; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) { c.x += 0.005f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { c.x -= 0.005f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { c.y += 0.005f; configurationChanged = true; }
@@ -83,37 +91,60 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
+	// Vertex shader
   std::string vertexShaderCode = getFileContent("../../shaders/julia_fractal.vert");
-  std::string fragmentShaderCode = getFileContent("../../shaders/julia_fractal.frag");
-
-  const char* vertexShaderSource = vertexShaderCode.c_str();
-	const char* fragmentShaderSource = fragmentShaderCode.c_str();
-
-	// Create Vertex Shader Object and get its reference
+	const char* vertexShaderSource = vertexShaderCode.c_str();
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	// Attach Vertex Shader source to the Vertex Shader Object
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	// Compile the Vertex Shader into machine code
 	glCompileShader(vertexShader);
 
-	// Create Fragment Shader Object and get its reference
+	// Fragment shader
+  std::string fragmentShaderCode = getFileContent("../../shaders/julia_fractal_2.frag");
+	const char* fragmentShaderSource = fragmentShaderCode.c_str();
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	// Attach Fragment Shader source to the Vertex Shader Object
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	// Compile the Fragment Shader into machine code
 	glCompileShader(fragmentShader);
 
-	// Create Shader Program Object and get its reference
+	// Fragment shader 2
+  std::string fragmentShaderCode2 = getFileContent("../../shaders/julia_fractal_3.frag");
+	const char* fragmentShaderSource2 = fragmentShaderCode2.c_str();
+	GLuint fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
+	glCompileShader(fragmentShader2);
+
+	// Fragment shader 3
+  std::string fragmentShaderCode3 = getFileContent("../../shaders/julia_fractal_e.frag");
+	const char* fragmentShaderSource3 = fragmentShaderCode3.c_str();
+	GLuint fragmentShader3 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader3, 1, &fragmentShaderSource3, NULL);
+	glCompileShader(fragmentShader3);
+
+	// Shader program 1
 	GLuint shaderProgram = glCreateProgram();
-	// Attach the Vertex and Fragment Shaders to the Shader Program
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
-	// Wrap-up / Link all the shaders together into the Shader Program
 	glLinkProgram(shaderProgram);
+	shaders[0] = shaderProgram;
+
+	// Shader program 2
+	GLuint shaderProgram2 = glCreateProgram();
+	glAttachShader(shaderProgram2, vertexShader);
+	glAttachShader(shaderProgram2, fragmentShader2);
+	glLinkProgram(shaderProgram2);
+	shaders[1] = shaderProgram2;
+
+	// Shader program 3
+	GLuint shaderProgram3 = glCreateProgram();
+	glAttachShader(shaderProgram3, vertexShader);
+	glAttachShader(shaderProgram3, fragmentShader3);
+	glLinkProgram(shaderProgram3);
+	shaders[2] = shaderProgram3;
 
 	// Delete the now useless Vertex and Fragment Shader Objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glDeleteShader(fragmentShader2);
+	glDeleteShader(fragmentShader3);
 
 	// Create reference containers for the Vertex Array Object and the Vertex Buffer Object
 	GLuint VAO, VBO;
@@ -140,13 +171,8 @@ int main() {
 	// Swap the back buffer with the front buffer
 	glfwSwapBuffers(window);
 
-	// Tell OpenGL which Shader Program we want to use
-	glUseProgram(shaderProgram);
-	// Bind the VAO so OpenGL knows to use it
+  // Bind the VAO so OpenGL knows to use it
 	glBindVertexArray(VAO);
-
-  // Set uniforms
-  glUniform2f(glGetUniformLocation(shaderProgram, "resolution"), width, height);
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window)) {
@@ -156,7 +182,11 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// Tell OpenGL which Shader Program we want to use
+		glUseProgram(shaders[currentShaderIdx]);
+
     // Set uniforms
+		glUniform2f(glGetUniformLocation(shaderProgram, "resolution"), width, height);
     glUniform2f(glGetUniformLocation(shaderProgram, "c"), c.x, c.y);
     glUniform1i(glGetUniformLocation(shaderProgram, "bailout"), bailout);
     glUniform1f(glGetUniformLocation(shaderProgram, "limit"), limit);

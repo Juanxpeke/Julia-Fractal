@@ -24,11 +24,10 @@ void main()
   {
     l = length(z);
     if (l > limit) break;
-    z = vec2(z.x * z.x - z.y * z.y, 2 * z.x * z.y) + c;
+    z = vec2(z.x * z.x * z.x - 3 * z.x * z.y * z.y, - z.y * z.y * z.y + 3 * z.x * z.x * z.y) + c;
   }
 
   float value = 1.0 - (float(i) / bailout);
-  // float value = l / limit;
   
   outColor = vec4(1.0, value, value, 1.0);
 }
