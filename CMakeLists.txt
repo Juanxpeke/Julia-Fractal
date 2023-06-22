@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(julia-fractal C CXX CUDA)
+project(julia-fractal C CXX)
 
 add_definitions(-D_USE_MATH_DEFINES)
 
