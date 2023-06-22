@@ -44,11 +44,11 @@ void updateInputs(GLFWwindow* window)
   if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { c.y -= 0.005f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) { zoom *= 1.2f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) { zoom /= 1.2f; configurationChanged = true; }
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) { color += 0.1f; configurationChanged = true; }
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { translation.x += 0.01f / zoom; configurationChanged = true; }
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { translation.x -= 0.01f / zoom; configurationChanged = true; }
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { translation.y += 0.01f / zoom; configurationChanged = true; }
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { translation.y -= 0.01f / zoom; configurationChanged = true; }
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) { color += 0.1f; }
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { translation.x += 0.01f / zoom; }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { translation.x -= 0.01f / zoom; }
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { translation.y += 0.01f / zoom; }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { translation.y -= 0.01f / zoom; }
   if (configurationChanged) printConfiguration();
 }
 

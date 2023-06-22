@@ -38,7 +38,7 @@ void main()
   
   // Color logic
   float H = mod(value * 5.5 + color, 6);
-  float S = value;
+  float S = 0.8;
   float L = value;
   float C = (1.0 - abs(2 * L - 1)) * S;
   float X = C * (1.0 - abs(mod(H, 2) - 1.0));
