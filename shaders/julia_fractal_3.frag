@@ -6,10 +6,16 @@ uniform vec2 c;
 uniform int bailout;
 uniform float limit;
 
+uniform float color;
 uniform float zoom;
 uniform vec2 translation;
 
 out vec4 outColor;
+
+float mod(float a, int b)
+{
+  return a - int(a) + int(a) % b;
+}
 
 void main()
 {
@@ -29,5 +35,23 @@ void main()
 
   float value = 1.0 - (float(i) / bailout);
   
-  outColor = vec4(1.0, value, value, 1.0);
+  // Color logic
+  float H = mod(value * 5.5 + color, 6);
+  float S = value;
+  float L = value;
+  float C = (1.0 - abs(2 * L - 1)) * S;
+  float X = C * (1.0 - abs(mod(H, 2) - 1.0));
+  float m = L - C / 2.0;
+
+  vec3 rgb;
+  if (H < 1) { rgb = vec3(C, X, 0.0); }
+  else if (H < 2) { rgb = vec3(X, C, 0.0); }
+  else if (H < 3) { rgb = vec3(0.0, C, X); }
+  else if (H < 4) { rgb = vec3(0.0, X, C); }
+  else if (H < 5) { rgb = vec3(X, 0.0, C); }
+  else { rgb = vec3(C, 0.0, X); }
+
+  rgb = rgb + vec3(m, m, m);
+
+  outColor = vec4(rgb, 1.0);
 }

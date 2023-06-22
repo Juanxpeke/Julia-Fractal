@@ -13,11 +13,12 @@ std::string shaderNames[] = { "quadratric", "cubic", "exponential" };
 GLuint shaders[3];
 int currentShaderIdx = 0;
 
-float2 c = { -0.04f, 0.00f };
+float2 c = { -0.54f, 0.54f };
 
 int bailout = 128;
 float limit = 50.0f;
 
+float color = 0.0f;
 float zoom = 1.0f;
 float2 translation = { 0.0f, 0.0f };
 
@@ -46,6 +47,7 @@ void updateInputs(GLFWwindow* window)
   if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) { limit -= 2.0f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) { zoom *= 1.2f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) { zoom /= 1.2f; configurationChanged = true; }
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) { color += 0.1f; configurationChanged = true; }
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) { translation.x += 0.01f / zoom; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) { translation.x -= 0.01f / zoom; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) { translation.y += 0.01f / zoom; configurationChanged = true; }
@@ -190,6 +192,7 @@ int main() {
     glUniform2f(glGetUniformLocation(shaderProgram, "c"), c.x, c.y);
     glUniform1i(glGetUniformLocation(shaderProgram, "bailout"), bailout);
     glUniform1f(glGetUniformLocation(shaderProgram, "limit"), limit);
+    glUniform1f(glGetUniformLocation(shaderProgram, "color"), color);
     glUniform1f(glGetUniformLocation(shaderProgram, "zoom"), zoom);
 		glUniform2f(glGetUniformLocation(shaderProgram, "translation"), translation.x, translation.y);
 
