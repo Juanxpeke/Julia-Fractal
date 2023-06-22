@@ -29,7 +29,6 @@ void printConfiguration()
 	std::cout << "shader: " << shaderNames[currentShaderIdx] << std::endl;
   std::cout << "c: (" << c.x << ", " << c.y << ")" << std::endl;
   std::cout << "bailout: " << bailout << std::endl;
-  std::cout << "limit: " << limit << std::endl;
   std::cout << "zoom: " << zoom << std:: endl << std:: endl;
 }
 
@@ -43,8 +42,6 @@ void updateInputs(GLFWwindow* window)
   if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) { c.x -= 0.005f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) { c.y += 0.005f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) { c.y -= 0.005f; configurationChanged = true; }
-  if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) { limit += 2.0f; configurationChanged = true; }
-  if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) { limit -= 2.0f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) { zoom *= 1.2f; configurationChanged = true; }
   if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) { zoom /= 1.2f; configurationChanged = true; }
 	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) { color += 0.1f; configurationChanged = true; }
