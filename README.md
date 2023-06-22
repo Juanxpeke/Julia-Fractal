@@ -8,6 +8,8 @@ Application for showing various types of fractals from Julia Sets (http://paulbo
 
 - Clone this repository.
 
+- Initialize submodules with ``` git submodule update --init --recursive ```.
+
 - Inside the root folder, create a build folder, and inside this folder run ``` cmake ../ ```.
 
 - Compile
