@@ -16,6 +16,10 @@ Application for showing various types of fractals from Julia Sets (http://paulbo
 
 - Run **julia_fractal.exe**.
  
+## Important
+
+It may be necessary to change the path in the ``` getFileContent(const char* filename) ``` function calls.
+
 ## Configurations
 
 You can change the visuals with the following keyboard keys.
