@@ -52,7 +52,8 @@ void updateInputs(GLFWwindow* window)
   if (configurationChanged) printConfiguration();
 }
 
-int main() {
+int main()
+{
   // Print initial configuration
   printConfiguration();
 
@@ -174,7 +175,8 @@ int main() {
 	glBindVertexArray(VAO);
 
 	// Main while loop
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window))
+	{
 		glfwPollEvents();
 
     updateInputs(window);
