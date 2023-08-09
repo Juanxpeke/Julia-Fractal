@@ -4,7 +4,7 @@ Application for showing various types of fractals from Julia Sets (http://paulbo
 
 ## Build
 
-In order to build the project, follow the following steps:
+In order to build the project, follow the following steps.
 
 - Install CMake (https://cmake.org/download/)
 
