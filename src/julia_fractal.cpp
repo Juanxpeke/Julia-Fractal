@@ -166,7 +166,7 @@ int main()
 
 	// Specify the color of the background
 	glClearColor(0.27f, 0.13f, 0.17f, 1.0f);
-	// Clean the back buffer and assing the new color to it
+	// Clean the back buffer and assign the new color to it
 	glClear(GL_COLOR_BUFFER_BIT);
 	// Swap the back buffer with the front buffer
 	glfwSwapBuffers(window);
